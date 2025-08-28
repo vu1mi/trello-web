@@ -1,4 +1,22 @@
 import { Box } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import SyncLockIcon from "@mui/icons-material/SyncLock";
+import BoltIcon from "@mui/icons-material/Bolt";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+
+const StyleChip = {
+  borderRadius: "5px",
+  border: "none",
+  paddingX: "5px",
+  // PointerEvent: "cursor",
+};
 
 function BoardBar() {
   return (
@@ -7,12 +25,85 @@ function BoardBar() {
         sx={{
           width: "100%",
           height: (theme) => theme.trelloCustom.boardBarHeight,
-          backgroundColor: "primary.main",
+          backgroundColor: "secondary.main",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
+          gap: 2,
+          overflowX: "auto",
+          borderTop: "1px solid #fff",
+          padding: "0px 16px",
         }}
       >
-        Board Content
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Chip
+            icon={<DashboardIcon />}
+            label="Vu1mi mern stack board"
+            sx={StyleChip}
+            clickable
+          />
+          <Chip
+            icon={<CloudUploadIcon />}
+            label="Add to Google Dirve"
+            sx={StyleChip}
+            clickable
+          />
+          <Chip
+            icon={<SyncLockIcon />}
+            label="Public/Private Workspace"
+            sx={StyleChip}
+            clickable
+          />
+          <Chip
+            icon={<BoltIcon />}
+            label="Automations"
+            clickable
+            sx={StyleChip}
+          />
+          <Chip
+            icon={<FilterListIcon />}
+            label="Filter"
+            clickable
+            sx={StyleChip}
+          />
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Button variant="outlined" startIcon={<PersonAddIcon />}>
+            Invite
+          </Button>
+          <AvatarGroup
+            max={4}
+            sx={{
+              "& .MuiAvatar-root": {
+                width: 34,
+                height: 34,
+              },
+            }}
+          >
+            <Tooltip title="Notifigation">
+              <Avatar
+                alt="Remy Sharp"
+                src="/static/images/avatar/1.jpg"
+                sx={{ border: "none" }}
+              />
+            </Tooltip>
+            <Tooltip title="Notifigation">
+              <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+            </Tooltip>
+            <Tooltip title="Notifigation">
+              <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+            </Tooltip>
+            <Tooltip title="Notifigation">
+              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
+            </Tooltip>
+            <Tooltip title="Notifigation">
+              <Avatar
+                alt="Trevor Henderson"
+                src="/static/images/avatar/5.jpg"
+              />
+            </Tooltip>
+          </AvatarGroup>
+        </Box>
       </Box>
     </>
   );
