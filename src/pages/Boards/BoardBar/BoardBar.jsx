@@ -15,7 +15,14 @@ const StyleChip = {
   borderRadius: "5px",
   border: "none",
   paddingX: "5px",
-  // PointerEvent: "cursor",
+  backgroundColor: "transparent",
+  ".MuiSvgIcon-root": {
+    color: "white",
+  },
+  "&:hover": {
+    backgroundColor: "primary.50",
+  },
+  color: "white",
 };
 
 function BoardBar() {
@@ -25,13 +32,15 @@ function BoardBar() {
         sx={{
           width: "100%",
           height: (theme) => theme.trelloCustom.boardBarHeight,
-          backgroundColor: "secondary.main",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 2,
           overflowX: "auto",
-          borderTop: "1px solid #fff",
+          borderBottom: "1px solid #fff",
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#34495e" : "#1976d2",
+
           padding: "0px 16px",
         }}
       >
@@ -68,7 +77,14 @@ function BoardBar() {
           />
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Button variant="outlined" startIcon={<PersonAddIcon />}>
+          <Button
+            variant="outlined"
+            startIcon={<PersonAddIcon />}
+            sx={{
+              color: "white",
+              borderColor: "white",
+            }}
+          >
             Invite
           </Button>
           <AvatarGroup
@@ -77,7 +93,11 @@ function BoardBar() {
               "& .MuiAvatar-root": {
                 width: 34,
                 height: 34,
+                border: "none",
+                color: "white",
+                backgroundColor: "#a4b0be",
               },
+              gap: 1,
             }}
           >
             <Tooltip title="Notifigation">

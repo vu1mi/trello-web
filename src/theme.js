@@ -1,64 +1,56 @@
 import { teal } from "@mui/material/colors";
-import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
-// Create a theme instance.
-const theme = extendTheme({
+import { createTheme } from "@mui/material/styles";
+const APP_BAR_HEIGHT = "58px";
+const BOARD_BAR_HEIGHT = "60px";
+const BOARD_CONTENT_HEIGHT = `calc( 100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`;
+const COLUMN_HEADER_HEIGHT = "50px";
+const COLUMN_FOOTER_HEIGHT = "50px";
+const theme = createTheme({
   trelloCustom: {
-    appBarHeight: "70px",
-    boardBarHeight: "58px",
+    appBarHeight: APP_BAR_HEIGHT,
+    boardBarHeight: BOARD_BAR_HEIGHT,
+    boardContentHeight: BOARD_CONTENT_HEIGHT,
+    column_header_height: COLUMN_HEADER_HEIGHT,
+    column_footer_height: COLUMN_FOOTER_HEIGHT,
   },
   colorSchemes: {
     light: {
       palette: {
-        primary: teal,
-        secondary: {
-          main: "#fff",
-        },
-        third: {
-          main: "#ff0000",
-        },
+        // primary: { main: teal[500], blank: "#d7f9f6", lightbold: "#98f1e8" },
+        // secondary: { main: "#fff" },
       },
     },
     dark: {
       palette: {
-        primary: {
-          main: "#fff",
-        },
-        secondary: {
-          main: "#414141ff",
-        },
+        // primary: { main: "#fff" },
+        // secondary: { main: "#414141" },
       },
     },
   },
   components: {
     MuiButton: {
-      defaultProps: {
-        className: "default-button-class",
-        style: { marginTop: 8, textTransform: "none" },
+      styleOverrides: {
+        root: {
+          marginTop: 8,
+          textTransform: "none",
+          borderWidth: 0.5,
+          "&:hover ": {
+            borderWidth: 1,
+          },
+        },
       },
     },
     MuiInputLabel: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          color: theme.palette.primary.main,
-          // "&:hover": {
-          //   ".MuiOutlinedInput-notchedOutline": {
-          //     borderColor: theme.pnpm list @mui/materialalette.primary.main,
-          //   },
-          // },
-        }),
+        root: {},
       },
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
           color: theme.palette.primary.main,
-          // ".MuiOutlinedInput-notchedOutline": {
-          //   borderColor: theme.palette.primary.main,
-          // },
-          "&:hover": {
-            ".MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.main,
-            },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            // borderColor: theme.palette.primary.main,
           },
         }),
       },
