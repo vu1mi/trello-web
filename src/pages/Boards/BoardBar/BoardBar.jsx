@@ -10,7 +10,7 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-
+import { capitalizeFirstLetter } from "~/utils/formatter";
 const StyleChip = {
   borderRadius: "5px",
   border: "none",
@@ -25,7 +25,7 @@ const StyleChip = {
   color: "white",
 };
 
-function BoardBar() {
+function BoardBar({ board }) {
   return (
     <>
       <Box
@@ -47,13 +47,13 @@ function BoardBar() {
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Chip
             icon={<DashboardIcon />}
-            label="Vu1mi mern stack board"
+            label={board?.title}
             sx={StyleChip}
             clickable
           />
           <Chip
             icon={<CloudUploadIcon />}
-            label="Add to Google Dirve"
+            label={capitalizeFirstLetter(board?.type)}
             sx={StyleChip}
             clickable
           />
