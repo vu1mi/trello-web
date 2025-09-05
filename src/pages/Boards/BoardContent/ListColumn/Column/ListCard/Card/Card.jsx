@@ -8,28 +8,49 @@ import GroupIcon from "@mui/icons-material/Group";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 
-function Card() {
+function Card({ card }) {
+  const showCard = () => {
+    return (
+      !!card?.memberIds?.length ||
+      !!card?.conmemnts?.length ||
+      !!card?.attachments?.length
+    );
+  };
+
+  console.log(showCard());
+
   return (
     <MuiCard sx={{ boxShadow: "0 1px 1px rgba(0,0,0,0.2)", overflow: "unset" }}>
-      <CardMedia
-        sx={{ height: 140 }}
-        image="https://statictuoitre.mediacdn.vn/thumb_w/640/2017/7-1512755474943.jpg"
-        title="green iguana"
-      />
+      {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
+
       <CardContent sx={{ p: 1.5 }}>
-        <Typography>Vu1missss</Typography>
+        <Typography>{card?.title}</Typography>
       </CardContent>
-      <CardActions sx={{ p: "0 4px 8px 4px" }}>
-        <Button size="small" startIcon={<GroupIcon />}>
-          20
-        </Button>
-        <Button size="small" startIcon={<ChatBubbleIcon />}>
-          15
-        </Button>
-        <Button size="small" startIcon={<AttachmentIcon />}>
-          10
-        </Button>
-      </CardActions>
+      {showCard() && (
+        <CardActions sx={{ p: "0 4px 8px 4px" }}>
+          {!!card?.memberIds?.length && (
+            <Button size="small" startIcon={<GroupIcon />}>
+              {card?.memberIds?.length}
+            </Button>
+          )}
+          {!!card?.memberIds?.length && (
+            <Button size="small" startIcon={<GroupIcon />}>
+              {card?.memberIds?.length}
+            </Button>
+          )}
+          {!!card?.conmemnts?.length && (
+            <Button size="small" startIcon={<ChatBubbleIcon />}>
+              {card?.conmemnts?.length}
+            </Button>
+          )}
+
+          {!!card?.attachments?.length && (
+            <Button size="small" startIcon={<AttachmentIcon />}>
+              {card?.attachments?.length}
+            </Button>
+          )}
+        </CardActions>
+      )}
     </MuiCard>
   );
 }
