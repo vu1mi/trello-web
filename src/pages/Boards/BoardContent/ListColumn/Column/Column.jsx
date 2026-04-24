@@ -1,4 +1,4 @@
-import { Tooltip, Typography } from "@mui/material";
+import { Tooltip, Typography, Collapse } from "@mui/material";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -18,8 +18,14 @@ import ListCard from "./ListCard/ListCard";
 import { mapOrder } from "~/utils/sorts";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-function Column({ column }) {
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import { inputBaseClasses } from '@mui/material/InputBase';
+function Column({ column, createCard }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openInput, setOpenInput] = useState(false);
+  const [valueInput, setValueInput] = useState("");
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,13 +35,19 @@ function Column({ column }) {
   };
   const orderCard = mapOrder(column?.cards, column?.cardOrderIds, "_id");
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging} =
     useSortable({ id: column._id, data: { ...column } });
   const dndKitColumnStyles = {
     touchAction: "none",
     transform: CSS.Translate.toString(transform),
     transition,
+    opacity: isDragging ? 0.8 : undefined,
   };
+  const createNewCard = async (dataCard) => {
+    await createCard(dataCard)
+    setValueInput("")
+    setOpenInput(false)
+  }
 
   return (
     <Box
@@ -49,12 +61,17 @@ function Column({ column }) {
         bgcolor: (theme) =>
           theme.palette.mode === "dark" ? "#333643" : "#ebecf0",
         ml: 2,
+        pb: 1,
         borderRadius: "6px",
         height: "fit-content",
-        maxHeight: (theme) =>
-          `calc(${theme.trelloCustom.boardContentHeight} - ${theme.spacing(
-            5
-          )})`,
+        // maxHeight: (theme) =>
+        //   `calc(${theme.trelloCustom.boardContentHeight} - ${theme.spacing(
+        //     5
+        //   )})`,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        padding: "15px 0 "
       }}
     >
       {/* column header */}
@@ -143,17 +160,93 @@ function Column({ column }) {
       {/* column footer */}
       <Box
         sx={{
-          height: (theme) => theme.trelloCustom.column_footer_height,
+          height: "auto",
           p: 2,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          width: "100%",
+          overflow: "hidden",
+          boxSizing: "border-box",
         }}
       >
-        <Button startIcon={<AddCardIcon />}>Add new card</Button>
-        <Tooltip title="Drag to move">
-          <DragHandleIcon sx={{ cursor: "pointer" }} />
-        </Tooltip>
+        <Collapse in={openInput} timeout="auto" unmountOnExit>
+          <Box sx={{ width: "100%", boxSizing: "border-box" }}>
+            <TextField
+              id="outlined-suffix-shrink"
+              label="Title card"
+              variant="outlined"
+              value={valueInput}
+              onChange={(e) => setValueInput(e.target.value)}
+              sx={{ width: "100%", mb: 1, boxSizing: "border-box", transition: "all 0.3s ease" }}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      sx={{
+                        opacity: 0,
+                        margin: "0 10px",
+
+                        pointerEvents: 'none',
+                        [`[data-shrink=true] ~ .${inputBaseClasses.root} > &`]: {
+                          opacity: 1,
+                        },
+                      }}
+                    >
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            <Box sx={{ display: 'flex', gap: '8px', width: "100%", boxSizing: "border-box", transition: "all 0.3s ease" }}>
+              <Button
+                onClick={() => setOpenInput(false)}
+                sx={{
+                  color: "white",
+                  m: 0,
+                  width: "100%",
+                  justifyContent: "flex-start",
+                  pl: 2.5,
+                  py: 1,
+                  backgroundColor: "#e95151",
+                  transition: "all 0.2s ease",
+                  '&:hover': {
+                    backgroundColor: "#f06868",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => createNewCard({ title: valueInput, columnId: column._id })}
+                sx={{
+                  color: "white",
+                  m: 0,
+                  width: "100%",
+                  justifyContent: "flex-start",
+                  pl: 2.5,
+                  py: 1,
+                  backgroundColor: "#5aac44",
+                  '&:hover': {
+                    backgroundColor: "#77d25e",
+                  },
+                }}
+              >
+                Create
+              </Button>
+            </Box>
+          </Box>
+        </Collapse>
+        <Collapse in={!openInput} timeout="auto" unmountOnExit >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <Button startIcon={<AddCardIcon />} onClick={() => setOpenInput(true)}>Add new card</Button>
+            <Tooltip title="Drag to move">
+              <DragHandleIcon sx={{ cursor: "pointer" }} />
+            </Tooltip>
+          </Box>
+        </Collapse>
+
       </Box>
     </Box>
   );

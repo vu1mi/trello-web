@@ -16,14 +16,14 @@ const theme = createTheme({
   colorSchemes: {
     light: {
       palette: {
-        // primary: { main: teal[500], blank: "#d7f9f6", lightbold: "#98f1e8" },
-        // secondary: { main: "#fff" },
+        primary: { main: teal[500], blank: "#d7f9f6", lightbold: "#98f1e8" },
+        secondary: { main: "#fff" },
       },
     },
     dark: {
       palette: {
-        // primary: { main: "#fff" },
-        // secondary: { main: "#414141" },
+        primary: { main: "#fff" },
+        secondary: { main: "#414141" },
       },
     },
   },

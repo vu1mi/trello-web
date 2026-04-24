@@ -1,8 +1,11 @@
 import Card from "./Card/Card";
 import Box from "@mui/material/Box";
+import { SortableContext,verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { Sort } from "@mui/icons-material";
 
 function ListCard({ cards }) {
   return (
+    <SortableContext items={cards.map(card => card._id) } strategy={verticalListSortingStrategy}>
     <Box
       sx={{
         p: 1,
@@ -29,6 +32,7 @@ function ListCard({ cards }) {
         <Card card={card} key={card._id} />
       ))}
     </Box>
+    </SortableContext>
   );
 }
 
