@@ -21,12 +21,16 @@ import { CSS } from "@dnd-kit/utilities";
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { inputBaseClasses } from '@mui/material/InputBase';
+import { useDroppable } from '@dnd-kit/core';
 function Column({ column, createCard }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openInput, setOpenInput] = useState(false);
   const [valueInput, setValueInput] = useState("");
 
   const open = Boolean(anchorEl);
+  const { setNodeRef: setDropRef, isOver } = useDroppable({
+    id: column._id,
+  });
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -35,7 +39,7 @@ function Column({ column, createCard }) {
   };
   const orderCard = mapOrder(column?.cards, column?.cardOrderIds, "_id");
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging} =
+  const { attributes, listeners, setNodeRef: setSortRef, transform, transition, isDragging} =
     useSortable({ id: column._id, data: { ...column } });
   const dndKitColumnStyles = {
     touchAction: "none",
@@ -48,10 +52,14 @@ function Column({ column, createCard }) {
     setValueInput("")
     setOpenInput(false)
   }
+    const setRefs = (node) => {
+    setDropRef(node);
+    setSortRef(node);
+  };
 
   return (
     <Box
-      ref={setNodeRef}
+      ref={setRefs}
       style={dndKitColumnStyles}
       {...attributes}
       {...listeners}

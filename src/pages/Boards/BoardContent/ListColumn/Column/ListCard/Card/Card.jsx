@@ -28,7 +28,7 @@ const { attributes, listeners, setNodeRef, transform, transition , isDragging } 
     opacity: isDragging ? 0.5 : undefined,
     border : isDragging ? "1px solid #32e33b" : undefined,
   };
-  console.log(showCard());
+  // console.log(showCard());
 
   return (
     <MuiCard ref={setNodeRef} style={dndKitCardStyles}

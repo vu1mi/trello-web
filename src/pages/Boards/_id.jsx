@@ -31,6 +31,7 @@ function Board() {
     columnToupdate.cardOrderIds.push(createdCard._id)
     setBoard(newboard)
   }
+  // console.log("board data:", board)
 
   return (
     <Container
