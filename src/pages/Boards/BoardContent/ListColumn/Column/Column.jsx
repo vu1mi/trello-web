@@ -19,10 +19,17 @@ import { mapOrder } from "~/utils/sorts";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import { inputBaseClasses } from '@mui/material/InputBase';
 import { useDroppable } from '@dnd-kit/core';
-function Column({ column, createCard }) {
+import {deleteColumnAPI, updateColumnAPI,createCardAPI} from "~/apis";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { cloneDeep } from "lodash";
+import { useConfirm } from 'material-ui-confirm'
+function Column({ column}) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+  const confirm = useConfirm()
   const [anchorEl, setAnchorEl] = useState(null);
   const [openInput, setOpenInput] = useState(false);
   const [valueInput, setValueInput] = useState("");
@@ -48,9 +55,58 @@ function Column({ column, createCard }) {
     opacity: isDragging ? 0.8 : undefined,
   };
   const createNewCard = async (dataCard) => {
-    await createCard(dataCard)
+    try{
+      const createdCard = await createCardAPI({ ...dataCard, boardId: board._id })
+   
+      const newboard = cloneDeep(board)
+      const columnToupdate = newboard.columns.find(c => c._id === createdCard.data.columnId)
+        if (!columnToupdate) {
+          toast.error("Column not found");
+          return;
+      }
+      columnToupdate.cards.push(createdCard.data)
+      columnToupdate.cardOrderIds.push(createdCard.data._id)
+        dispatch(updateCurrentActiveBoard(newboard))
+        toast.success("Create card successfully")
+      }
+      catch(error){
+        toast.error("Create card failed")
+        return
+      }
+    // console.log(response)
     setValueInput("")
     setOpenInput(false)
+    
+  }
+
+  const handleDeleteColumn = async () => {
+
+    try{
+      const { confirmed } = await confirm({
+      title: 'Xóa column ?',
+      description: 'Hành động này không thể hoàn tác!',
+      confirmationText: 'Delete',
+      cancellationText: 'Cancel',
+       })
+
+      if (!confirmed) return
+       const response = await deleteColumnAPI(column._id)
+       console.log(response)
+
+      if (response.status === 204) {
+            toast.success("Delete column successfully")
+            const newboard = cloneDeep(board)
+            newboard.columns = newboard.columns.filter(c => c._id !== column._id)
+            newboard.columnOrderIds = newboard.columnOrderIds.filter(id => id !== column._id)
+            dispatch(updateCurrentActiveBoard(newboard))
+        }
+    
+     
+    }catch(error){
+      if (error?.confirmed === false) return // 👈 user cancel
+     toast.error("Delete column failed")
+    }
+  
   }
     const setRefs = (node) => {
     setDropRef(node);
@@ -148,7 +204,8 @@ function Column({ column, createCard }) {
               <ListItemText>Patse</ListItemText>
             </MenuItem>
             <Divider />
-            <MenuItem>
+            <MenuItem
+              onClick={handleDeleteColumn}>
               <ListItemIcon>
                 <DeleteOutlineIcon fontSize="small" />
               </ListItemIcon>
@@ -163,91 +220,19 @@ function Column({ column, createCard }) {
           </Menu>
         </Box>
       </Box>
-      <ListCard cards={orderCard} />
+      <ListCard cards={orderCard}  />
 
       {/* column footer */}
       <Box
         sx={{
-          height: "auto",
-          p: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          px: 2,
+          pb: 1,
           width: "100%",
-          overflow: "hidden",
           boxSizing: "border-box",
         }}
       >
-        <Collapse in={openInput} timeout="auto" unmountOnExit>
-          <Box sx={{ width: "100%", boxSizing: "border-box" }}>
-            <TextField
-              id="outlined-suffix-shrink"
-              label="Title card"
-              variant="outlined"
-              value={valueInput}
-              onChange={(e) => setValueInput(e.target.value)}
-              sx={{ width: "100%", mb: 1, boxSizing: "border-box", transition: "all 0.3s ease" }}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment
-                      position="end"
-                      sx={{
-                        opacity: 0,
-                        margin: "0 10px",
-
-                        pointerEvents: 'none',
-                        [`[data-shrink=true] ~ .${inputBaseClasses.root} > &`]: {
-                          opacity: 1,
-                        },
-                      }}
-                    >
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-            <Box sx={{ display: 'flex', gap: '8px', width: "100%", boxSizing: "border-box", transition: "all 0.3s ease" }}>
-              <Button
-                onClick={() => setOpenInput(false)}
-                sx={{
-                  color: "white",
-                  m: 0,
-                  width: "100%",
-                  justifyContent: "flex-start",
-                  pl: 2.5,
-                  py: 1,
-                  backgroundColor: "#e95151",
-                  transition: "all 0.2s ease",
-                  '&:hover': {
-                    backgroundColor: "#f06868",
-                  },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => createNewCard({ title: valueInput, columnId: column._id })}
-                sx={{
-                  color: "white",
-                  m: 0,
-                  width: "100%",
-                  justifyContent: "flex-start",
-                  pl: 2.5,
-                  py: 1,
-                  backgroundColor: "#5aac44",
-                  '&:hover': {
-                    backgroundColor: "#77d25e",
-                  },
-                }}
-              >
-                Create
-              </Button>
-            </Box>
-          </Box>
-        </Collapse>
-        <Collapse in={!openInput} timeout="auto" unmountOnExit >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <Collapse in={!openInput} timeout={200} unmountOnExit>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Button startIcon={<AddCardIcon />} onClick={() => setOpenInput(true)}>Add new card</Button>
             <Tooltip title="Drag to move">
               <DragHandleIcon sx={{ cursor: "pointer" }} />
@@ -255,6 +240,59 @@ function Column({ column, createCard }) {
           </Box>
         </Collapse>
 
+        <Collapse in={openInput} timeout={200} unmountOnExit>
+          <Box sx={{ width: "100%", boxSizing: "border-box" }}>
+            <TextField
+              autoFocus
+              id="outlined-new-card"
+              label="Title card"
+              variant="outlined"
+              size="small"
+              value={valueInput}
+              onChange={(e) => setValueInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && valueInput.trim()) {
+                  createNewCard({ title: valueInput.trim(), columnId: column._id });
+                }
+                if (e.key === 'Escape') {
+                  setOpenInput(false);
+                  setValueInput('');
+                }
+              }}
+              sx={{ width: "100%", mb: 1, boxSizing: "border-box" }}
+            />
+            <Box sx={{ display: 'flex', gap: 1, width: "100%", boxSizing: "border-box" }}>
+              <Button
+                onClick={() => { setOpenInput(false); setValueInput(''); }}
+                sx={{
+                  color: "white",
+                  flex: 1,
+                  py: 0.75,
+                  backgroundColor: "#e95151",
+                  transition: "background-color 0.2s ease",
+                  '&:hover': { backgroundColor: "#f06868" },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => valueInput.trim() && createNewCard({ title: valueInput.trim(), columnId: column._id })}
+                disabled={!valueInput.trim()}
+                sx={{
+                  color: "white",
+                  flex: 1,
+                  py: 0.75,
+                  backgroundColor: "#5aac44",
+                  transition: "background-color 0.2s ease",
+                  '&:hover': { backgroundColor: "#77d25e" },
+                  '&.Mui-disabled': { backgroundColor: "#a0c99a", color: "white" },
+                }}
+              >
+                Create
+              </Button>
+            </Box>
+          </Box>
+        </Collapse>
       </Box>
     </Box>
   );

@@ -1,24 +1,35 @@
 import Box from "@mui/material/Box";
 import Column from "./Column/Column";
-import { Button } from "@mui/material";
+import { Button, Collapse } from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import React from "react";
-import { filledInputClasses } from '@mui/material/FilledInput';
-import { inputBaseClasses } from '@mui/material/InputBase';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import { createColumnAPI } from "~/apis";
+import { cloneDeep } from "lodash";
 import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import {  createColumnAPI, deleteColumnAPI  } from "~/apis/index.js";
 
-function ListColumn({ columns, createColumn, createCard }) {
-  const [openNewColumnForm, setOpenNewColumnForm] = React.useState(false);
+function ListColumn({ columns }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
   const [openinput, setOpenInput] = React.useState(false);
   const [valueInput, setValueInput] = React.useState("");
+
   const createNewColumn = async () => {
-    await createColumn({ title: valueInput });
+    if (!valueInput.trim()) return;
+
+    
+    const newboard = cloneDeep(board)
+    const createdColumn = await createColumnAPI({  "title": valueInput.trim() , "boardId": board._id })
+        newboard.columns.push(createdColumn)
+        newboard.columnOrderIds.push(createdColumn._id)
+        dispatch(updateCurrentActiveBoard(newboard))
+
+    // await createColumn({ title: valueInput.trim() });
     setOpenInput(false);
     setValueInput("");
   };
@@ -39,118 +50,85 @@ function ListColumn({ columns, createColumn, createCard }) {
       >
         {/* <Column /> */}
         {columns?.map((column) => (
-          <Column key={column._id} column={column} createCard={createCard} />
+          <Column key={column._id} column={column}   />
         ))}
         <Box
           sx={{
-            minWidth: "200px",
-            maxWidth: "400px",
+            minWidth: "250px",
+            maxWidth: "300px",
             mx: 2,
             borderRadius: "6px",
             height: "fit-content",
             bgcolor: "#ffffff3d",
+            p: 1,
           }}
         >
-          {
-            openinput === false ?
+          <Collapse in={!openinput} timeout={200} unmountOnExit>
+            <Button
+              onClick={() => setOpenInput(true)}
+              startIcon={<AddBoxIcon />}
+              sx={{
+                color: "white",
+                width: "100%",
+                justifyContent: "flex-start",
+                pl: 1.5,
+                py: 1,
+              }}
+            >
+              Add new column
+            </Button>
+          </Collapse>
 
-              <Button
-                onClick={() => setOpenInput(true)}
-                startIcon={<AddBoxIcon />}
-                sx={{
-                  color: "white",
-                  m: 0,
-                  width: "100%",
-                  justifyContent: "flex-start",
-                  pl: 2.5,
-                  py: 1,
+          <Collapse in={openinput} timeout={200} unmountOnExit>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <TextField
+                autoFocus
+                label="Title column"
+                variant="outlined"
+                size="small"
+                value={valueInput}
+                onChange={(e) => setValueInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') createNewColumn();
+                  if (e.key === 'Escape') { setOpenInput(false); setValueInput(''); }
                 }}
-              >
-                Add new column
-              </Button>
-              : <Box
-                component="form"
-                sx={{
-                  '& > :not(style)': { m: 1, width: '25ch' },
-                  transform: openinput ? "scaleX(1)" : "scaleX(0)",
-                  transformOrigin: "left",
-                  transition: "transform 0.3s ease",
-
-                }}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="outlined-suffix-shrink"
-                  label="Title column"
-                  variant="outlined"
-                  value={valueInput}
-                  onChange={(e) => setValueInput(e.target.value)}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment
-                          position="end"
-
-                          sx={{
-
-                            opacity: 0,
-                            pointerEvents: 'none',
-                            [`[data-shrink=true] ~ .${inputBaseClasses.root} > &`]: {
-                              opacity: 1,
-                            },
-
-                          }}
-
-                        >
-
-                        </InputAdornment>
-                      ),
-                    },
+                sx={{ width: "100%", 
+                   bgcolor: (theme) =>
+                   theme.palette.mode === "dark" ? "transparent" : "white", 
+                   borderRadius: 1 }}
+              />
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  onClick={() => { setOpenInput(false); setValueInput(''); }}
+                  sx={{
+                    color: "white",
+                    flex: 1,
+                    py: 0.75,
+                    backgroundColor: "#e95151",
+                    transition: "background-color 0.2s ease",
+                    '&:hover': { backgroundColor: "#f06868" },
                   }}
-                />
-                <div style={{ display: 'flex', gap: '8px', padding: '0 8px 8px' }}>
-                  <Button
-                    onClick={() => setOpenInput(false)}
-
-                    sx={{
-                      color: "white",
-                      m: 0,
-                      width: "100%",
-                      justifyContent: "flex-start",
-                      pl: 2.5,
-                      py: 1,
-                      backgroundColor: "#e95151",
-                      '&:hover': {
-                        backgroundColor: "#f06868",
-                      },
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => createNewColumn(valueInput)}
-                    sx={{
-                      color: "white",
-                      m: 0,
-                      width: "100%",
-                      justifyContent: "flex-start",
-                      pl: 2.5,
-                      py: 1,
-                      backgroundColor: "#5aac44",
-                      '&:hover': {
-                        backgroundColor: "#77d25e",
-                      },
-                    }}
-                  >
-                    Create
-                  </Button>
-
-                </div>
-
-
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={createNewColumn}
+                  disabled={!valueInput.trim()}
+                  sx={{
+                    color: "white",
+                    flex: 1,
+                    py: 0.75,
+                    backgroundColor: "#5aac44",
+                    transition: "background-color 0.2s ease",
+                    '&:hover': { backgroundColor: "#77d25e" },
+                    '&.Mui-disabled': { backgroundColor: "#a0c99a", color: "white" },
+                  }}
+                >
+                  Create
+                </Button>
               </Box>
-          }
+            </Box>
+          </Collapse>
         </Box>
       </Box>
     </SortableContext>

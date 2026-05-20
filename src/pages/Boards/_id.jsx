@@ -3,35 +3,29 @@ import AppBar from "../../components/AppBar/AppBar";
 import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
 import { mockData } from "~/apis/mock-data";
-import { use } from "react";
-import { fetchBoardDetailAPI, createColumnAPI, createCardAPI } from "~/apis";
+import {  createColumnAPI, createCardAPI, deleteColumnAPI, deleteCardApi , updateCardAPI } from "~/apis/index.js";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {fectchBoardDetailAPI, selectCurrentActiveBoard, updateCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
+import { cloneDeep } from "lodash";
 function Board() {
-  const [board, setBoard] = useState(null);
-  useEffect(async () => {
-    const respone = await fetchBoardDetailAPI("69a858057ac4cb4c68b3213b");
-    setBoard(respone);
+  // const [board, setBoard] = useState(null);
+  const board = useSelector(selectCurrentActiveBoard);
+  const dispatch = useDispatch();
+  const currentActiveBoard = useSelector(selectCurrentActiveBoard);
+  useEffect( () => {
+    const fetchBoardDetail = async () => {
+    const respone = await dispatch(fectchBoardDetailAPI("69a858057ac4cb4c68b3213b"));
+    const newboard = respone.payload 
+     dispatch(updateCurrentActiveBoard(newboard))
+
     console.log("Board detail data:", respone);
+    }
+    fetchBoardDetail()
   }, []);
 
-  const createColumn = async (newColumn) => {
-    const createdColumn = await createColumnAPI({ ...newColumn, boardId: board._id })
 
-    const newboard = { ...board }
-    newboard.columns.push(createdColumn)
-    newboard.columnOrderIds.push(createdColumn._id)
-    setBoard(newboard)
-  }
-  const createCard = async (newCard) => {
-    const createdCard = await createCardAPI({ ...newCard, boardId: board._id })
 
-    const newboard = { ...board }
-    const columnToupdate = board.columns.find(c => c._id === newCard.columnId)
-    columnToupdate.cards.push(createdCard)
-    columnToupdate.cardOrderIds.push(createdCard._id)
-    setBoard(newboard)
-  }
-  // console.log("board data:", board)
 
   return (
     <Container
@@ -41,7 +35,7 @@ function Board() {
     >
       <AppBar />
       <BoardBar board={board} />
-      <BoardContent board={board} createColumn={createColumn} createCard={createCard} />
+      <BoardContent board={board}   />
     </Container>
   );
 }

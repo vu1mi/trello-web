@@ -29,7 +29,7 @@ function ListCard({ cards }) {
       }}
     >
       {cards.map((card) => (
-        <Card card={card} key={card._id} />
+        <Card card={card} key={card._id}   />
       ))}
     </Box>
     </SortableContext>

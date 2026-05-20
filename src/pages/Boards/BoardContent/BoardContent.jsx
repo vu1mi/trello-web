@@ -16,8 +16,7 @@ import { useState, useEffect, useRef } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 import Column from "./ListColumn/Column/Column";
 import Card  from "./ListColumn/Column/ListCard/Card/Card";
-import { set } from "lodash";
-function BoardContent({ board, createColumn, createCard }) {
+function BoardContent({ board }) {
   const TYPE_ELEMENT_DRANGGING ={
     COLUMN: "COLUMN",
     CARD: "CARD"
@@ -25,8 +24,8 @@ function BoardContent({ board, createColumn, createCard }) {
   const [typeElementDrangging, setTypeElementDrangging] = useState("");
   const [dataElementDrangging, setDataElementDrangging] = useState(null);
   const [idColumnDrangging, setIdColumnDrangging] = useState(null);
-  const [orderedColumns, setorderedColumns] = useState([]); // dữ liệu các cột gồm dữ liệu full 
-  const [oldcolumnactive, setOldColumnActive] = useState([]); // dữ liệu các cột chỉ gồm id và name
+  const [orderedColumns, setorderedColumns] = useState([]); 
+  const [oldcolumnactive, setOldColumnActive] = useState([]); 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },
   });
@@ -244,7 +243,7 @@ function BoardContent({ board, createColumn, createCard }) {
           display: "flex",
         }}
       >
-        <ListColumn columns={orderedColumns} createColumn={createColumn} createCard={createCard} />
+        <ListColumn columns={orderedColumns}     />
         <DragOverlay dropAnimation={dropanimation}>
           {!idColumnDrangging && null }
           {(typeElementDrangging === TYPE_ELEMENT_DRANGGING.CARD)  && <Card card={dataElementDrangging} />}

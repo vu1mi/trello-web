@@ -1,16 +1,6 @@
 import axios from "axios";
 import { API_ROOT } from "~/utils/constants";
 
-export const fetchBoardDetailAPI = async (boardId) => {
-  try {
-    const response = await axios.get(`${API_ROOT}/v1/board/${boardId}`);
-    return response.data;
-  }
-  catch (error) {
-    console.error("Error fetching board data:", error);
-    throw error;
-  }
-};
 
 export const createColumnAPI = async (columnData) => {
   try {
@@ -39,7 +29,7 @@ export const updateColumnAPI = async (columnId, columnName) => {
 export const deleteColumnAPI = async (columnId) => {
   try {
     const response = await axios.delete(`${API_ROOT}/v1/column/${columnId}`);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error deleting column:", error);
     throw error;
@@ -51,6 +41,26 @@ export const createCardAPI = async (cardData) => {
     return response.data;
   } catch (error) {
     console.error("Error creating card:", error);
+    throw error;
+  }
+};
+export const updateCardAPI = async (cardId, cardName) => {
+  try {
+    const response = await axios.patch(`${API_ROOT}/v1/card/${cardId}`, {
+      title: cardName,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error updating card:", error);
+    throw error;
+  }
+};
+ export const deleteCardApi  = async (cardId) => {
+  try {
+    const response = await axios.delete(`${API_ROOT}/v1/card/${cardId}`);
+    return response;
+  } catch (error) {
+    console.error("Error deleting card:", error);
     throw error;
   }
 };
