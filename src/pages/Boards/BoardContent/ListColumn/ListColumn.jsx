@@ -74,6 +74,7 @@ function ListColumn({ columns }) {
                 pl: 1.5,
                 py: 1,
               }}
+              className="interceptor-loading"
             >
               Add new column
             </Button>

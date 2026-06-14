@@ -8,22 +8,27 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {fectchBoardDetailAPI, selectCurrentActiveBoard, updateCurrentActiveBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { cloneDeep } from "lodash";
+import { useParams } from "react-router-dom";
+import PageLoadingSpinner from "~/components/Loading/PageLoadingSpinner";
 function Board() {
-  // const [board, setBoard] = useState(null);
+  // const idboard = "69a858057ac4cb4c68b3213b";
+  const { boardId } = useParams(); 
   const board = useSelector(selectCurrentActiveBoard);
   const dispatch = useDispatch();
   const currentActiveBoard = useSelector(selectCurrentActiveBoard);
-  useEffect( () => {
+  useEffect(  () => {
     const fetchBoardDetail = async () => {
-    const respone = await dispatch(fectchBoardDetailAPI("69a858057ac4cb4c68b3213b"));
+    const respone = await dispatch(fectchBoardDetailAPI(boardId));
     const newboard = respone.payload 
      dispatch(updateCurrentActiveBoard(newboard))
-
     console.log("Board detail data:", respone);
     }
     fetchBoardDetail()
-  }, []);
+  }, [dispatch, boardId]);
 
+  if (!board) {
+    return <PageLoadingSpinner caption="Loading board details..." />;
+  }
 
 
 

@@ -10,8 +10,14 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import {useSelector , useDispatch} from 'react-redux';
+import {selectUserData ,logout} from '~/redux/user/userSlice';
+import { useConfirm } from 'material-ui-confirm'
 
 function Starred() {
+  const userData = useSelector(selectUserData);
+  const confirm = useConfirm();
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -19,6 +25,19 @@ function Starred() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleLogout =  async () => {
+      const {confirmed} = await  confirm({
+      title: "Confirm Logout",
+      message: "Are you sure you want to logout?",
+      confirmationText: "Logout",
+      cancellationText: "Cancel",
+    });
+    if(confirmed) {
+      dispatch(logout());
+    }
+  
+   
   };
   return (
     <Box>
@@ -31,7 +50,10 @@ function Starred() {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+          <Avatar sx={{ width: 32, height: 32 }}
+                  src={userData?.avatar || undefined}>
+            {userData?.name?.charAt(0).toUpperCase()}
+          </Avatar>
         </IconButton>
       </Tooltip>
       <Menu
@@ -39,18 +61,19 @@ function Starred() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        onClick={handleClose}
         slotProps={{
           list: {
             "aria-labelledby": "basic-button-starred",
           },
         }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleClose} sx={{'&:hover': {color: "success.light"}}}>
           <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> Profile
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        {/* <MenuItem onClick={handleClose}>
           <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> My account
-        </MenuItem>
+        </MenuItem> */}
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
@@ -64,10 +87,12 @@ function Starred() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout} sx={{'&:hover': {color: "red"} ,
+                                              '&:hover .logout-item': {color: "red"}
+        }}>
           <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
+            <Logout fontSize="small" className="logout-item" />
+          </ListItemIcon >
           Logout
         </MenuItem>
       </Menu>

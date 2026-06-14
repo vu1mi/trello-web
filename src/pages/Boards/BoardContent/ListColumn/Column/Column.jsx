@@ -233,7 +233,11 @@ function Column({ column}) {
       >
         <Collapse in={!openInput} timeout={200} unmountOnExit>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Button startIcon={<AddCardIcon />} onClick={() => setOpenInput(true)}>Add new card</Button>
+            <Button 
+            startIcon={<AddCardIcon />}
+            onClick={() => setOpenInput(true)}
+            className="interceptor-loading"
+            >Add new card</Button>
             <Tooltip title="Drag to move">
               <DragHandleIcon sx={{ cursor: "pointer" }} />
             </Tooltip>
