@@ -34,7 +34,7 @@ const NotFound = () => {
           '0%': { transform: 'scale(1)', opacity: 0.2 },
           '50%': { transform: 'scale(1.2)', opacity: 0.4 },
           '100%': { transform: 'scale(1)', opacity: 0.2 },
-        }
+        },
       }}
     >
       {/* Đốm sáng nền Pulse tự động */}
@@ -43,10 +43,11 @@ const NotFound = () => {
           position: 'absolute',
           width: '500px',
           height: '500px',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(0,0,0,0) 70%)',
+          background:
+            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(0,0,0,0) 70%)',
           top: '15%',
           animation: 'pulseGlow 8s infinite ease-in-out',
-          zIndex: 0
+          zIndex: 0,
         }}
       />
 
@@ -93,10 +94,11 @@ const NotFound = () => {
               mb: 4,
               lineHeight: 1.6,
               maxWidth: '450px',
-              mx: 'auto'
+              mx: 'auto',
             }}
           >
-            Đường dẫn này không tồn tại hoặc đã bị gỡ bỏ. Vui lòng bấm vào nút bên dưới để quay lại màn hình chính.
+            Đường dẫn này không tồn tại hoặc đã bị gỡ bỏ. Vui lòng bấm vào nút
+            bên dưới để quay lại màn hình chính.
           </Typography>
 
           {/* Nút bấm dùng hiệu ứng transition css gốc */}
@@ -112,7 +114,8 @@ const NotFound = () => {
               borderRadius: '8px',
               textTransform: 'none',
               boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)',
-              transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+              transition:
+                'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
               '&:hover': {
                 background: 'linear-gradient(45deg, #4f46e5, #9333ea)',
                 boxShadow: '0 6px 20px rgba(99, 102, 241, 0.6)',
@@ -120,7 +123,7 @@ const NotFound = () => {
               },
               '&:active': {
                 transform: 'scale(0.98)',
-              }
+              },
             }}
           >
             Quay về Trang chủ

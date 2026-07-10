@@ -1,17 +1,17 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Typography from "@mui/material/Typography";
-import ContentCut from "@mui/icons-material/ContentCut";
-import ContentCopy from "@mui/icons-material/ContentCopy";
-import ContentPaste from "@mui/icons-material/ContentPaste";
-import Cloud from "@mui/icons-material/Cloud";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Typography from '@mui/material/Typography';
+import ContentCut from '@mui/icons-material/ContentCut';
+import ContentCopy from '@mui/icons-material/ContentCopy';
+import ContentPaste from '@mui/icons-material/ContentPaste';
+import Cloud from '@mui/icons-material/Cloud';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function Templates() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -26,12 +26,12 @@ function Templates() {
     <Box>
       <Button
         id="basic-button-template"
-        aria-controls={open ? "basic-menu-template" : undefined}
+        aria-controls={open ? 'basic-menu-template' : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         endIcon={<ExpandMoreIcon />}
-        sx={{ color: "#fff" }}
+        sx={{ color: '#fff' }}
       >
         Templates
       </Button>
@@ -42,7 +42,7 @@ function Templates() {
         onClose={handleClose}
         slotProps={{
           list: {
-            "aria-labelledby": "basic-button-template",
+            'aria-labelledby': 'basic-button-template',
           },
         }}
       >
@@ -51,7 +51,7 @@ function Templates() {
             <ContentCut fontSize="small" />
           </ListItemIcon>
           <ListItemText>Cut</ListItemText>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             ⌘X
           </Typography>
         </MenuItem>
@@ -60,7 +60,7 @@ function Templates() {
             <ContentCopy fontSize="small" />
           </ListItemIcon>
           <ListItemText>Copy</ListItemText>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             ⌘C
           </Typography>
         </MenuItem>
@@ -69,7 +69,7 @@ function Templates() {
             <ContentPaste fontSize="small" />
           </ListItemIcon>
           <ListItemText>Paste</ListItemText>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             ⌘V
           </Typography>
         </MenuItem>
