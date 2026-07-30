@@ -60,7 +60,6 @@ authorizeAxios.interceptors.response.use(
           });
       }
       originalRequest._retry = true;
-
       return refreshTokenPromise.then((accessToken) => {
         return authorizeAxios(originalRequest);
       });
@@ -70,7 +69,8 @@ authorizeAxios.interceptors.response.use(
     if (error.response?.data?.message) {
       errorMessage = error.response?.data?.message;
     }
-    console.error('API Error:', error.response.status);
+    console.error('API Error:', error.response.status, errorMessage);
+    toast.error(errorMessage)
     if (error.response.status !== 401) {
       toast.error(errorMessage || 'An error occurred. Please try again.');
     }

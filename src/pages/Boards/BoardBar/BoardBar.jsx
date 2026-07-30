@@ -1,4 +1,12 @@
-import { Box } from '@mui/material';
+import { useState } from 'react';
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
 import Chip from '@mui/material/Chip';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -11,6 +19,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { capitalizeFirstLetter } from '~/utils/formatter';
+import {GroupUserAvatar} from '../../../components/Boards/UerGroupAvatar';
+import {FormInvite} from '../../../components/Boards/FormInvite'
 
 const StyleChip = {
   borderRadius: '5px',
@@ -27,6 +37,21 @@ const StyleChip = {
 };
 
 function BoardBar({ board }) {
+  const [openInviteModal, setOpenInviteModal] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const handleOpenInviteModal = () => setOpenInviteModal(true);
+  const handleCloseInviteModal = () => {
+    setOpenInviteModal(false);
+    setEmail('');
+  };
+
+  const handleInvite = () => {
+    if (!email.trim()) return;
+    console.log('Invite email:', email);
+    handleCloseInviteModal();
+  };
+
   return (
     <>
       <Box
@@ -78,54 +103,14 @@ function BoardBar({ board }) {
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Button
-            variant="outlined"
-            startIcon={<PersonAddIcon />}
-            sx={{
-              color: 'white',
-              borderColor: 'white',
-            }}
-          >
-            Invite
-          </Button>
-          <AvatarGroup
-            max={4}
-            sx={{
-              '& .MuiAvatar-root': {
-                width: 34,
-                height: 34,
-                border: 'none',
-                color: 'white',
-                backgroundColor: '#a4b0be',
-              },
-              gap: 1,
-            }}
-          >
-            <Tooltip title="Notifigation">
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                sx={{ border: 'none' }}
-              />
-            </Tooltip>
-            <Tooltip title="Notifigation">
-              <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-            </Tooltip>
-            <Tooltip title="Notifigation">
-              <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-            </Tooltip>
-            <Tooltip title="Notifigation">
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-            </Tooltip>
-            <Tooltip title="Notifigation">
-              <Avatar
-                alt="Trevor Henderson"
-                src="/static/images/avatar/5.jpg"
-              />
-            </Tooltip>
-          </AvatarGroup>
+       
+          <FormInvite/>
+         
+          <GroupUserAvatar  />
         </Box>
       </Box>
+
+  
     </>
   );
 }

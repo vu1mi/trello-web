@@ -15,6 +15,13 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { GlobalStyles } from '@mui/material';
 // inject redux store vao authorizeAxios de su dung trong interceptor
 import { injectStore } from '~/utils/authorizeAxios';
+import { io } from "socket.io-client";
+import { API_ROOT } from './utils/constants';
+
+export const socketInstance = io(API_ROOT, {
+  withCredentials: true,
+  transports: ['websocket', 'polling']
+})
 
 injectStore(store);
 

@@ -18,7 +18,7 @@ export const fetchUserDataAPI = createAsyncThunk(
     return response.data;
   }
 );
-export const fetchUserDataByTokenAPI = createAsyncThunk(
+export const updateUserDataByTokenAPI = createAsyncThunk(
   'user/fetchUserDataByToken',
   async (data) => {
     const response = await authorizeAxios.patch(`${API_ROOT}/v1/user/profile`, data);
@@ -48,7 +48,7 @@ export const userSlice = createSlice({
     builder.addCase(logout.fulfilled, (state, action) => {
       state.userData = null;
     });
-    builder.addCase(fetchUserDataByTokenAPI.fulfilled, (state, action) => {
+    builder.addCase(updateUserDataByTokenAPI.fulfilled, (state, action) => {
       const userData = action.payload;
       state.userData = userData;
     });

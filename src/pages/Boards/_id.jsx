@@ -20,8 +20,10 @@ import {
 import { cloneDeep } from 'lodash';
 import { useParams } from 'react-router-dom';
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner';
+
+import { CardActions } from '~/components/model/CardActive/CardActivity';
 function Board() {
-  // const idboard = "69a858057ac4cb4c68b3213b";
+
   const { boardId } = useParams();
   const board = useSelector(selectCurrentActiveBoard);
   const dispatch = useDispatch();
@@ -49,6 +51,7 @@ function Board() {
       <AppBar />
       <BoardBar board={board} />
       <BoardContent board={board} />
+      <CardActions/>
     </Container>
   );
 }

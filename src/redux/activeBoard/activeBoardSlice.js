@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import authorizeAxios from '~/utils/authorizeAxios';
 import { API_ROOT } from '~/utils/constants';
 
@@ -25,15 +24,28 @@ export const activeBoardSlice = createSlice({
   // xử li dữ liệu đồng bộ
   reducers: {
     updateCurrentActiveBoard: (state, action) => {
-      // action.payload là dữ liệu được truyền vào khi gọi action này
       const board = action.payload;
       state.currentActiveBoard = board;
     },
+    updateCardAction:(state,action)=>{
+      const cardData = action.payload
+      const column = state.currentActiveBoard.columns.find(i => i._id == cardData.columnId)
+      if(column){
+        const card = column.cards.find(i => i._id == cardData.id)
+        console.log(cardData.id)
+        if(card){
+          console.log('yessss', cardData)
+
+          Object.keys(cardData).forEach(key =>{
+            card[key] = cardData[key]
+          })
+        }
+      }
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchBoardDetailAPI.fulfilled, (state, action) => {
       const board = action.payload;
-
       state.currentActiveBoard = board;
     });
   },
@@ -41,7 +53,7 @@ export const activeBoardSlice = createSlice({
 
 // actions la noi danh cho cac component ben duoi goi bang distpatch de thay doi state
 // nhung action duoc redux tao tu dong theo ten reducer va duoc export ra de su dung o cac component khac
-export const { updateCurrentActiveBoard } = activeBoardSlice.actions;
+export const { updateCurrentActiveBoard , updateCardAction } = activeBoardSlice.actions;
 
 // selector dung de lay du lieu tu state, o day la lay currentActiveBoard tu state.activeBoard
 export const selectCurrentActiveBoard = (state) =>

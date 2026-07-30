@@ -1,23 +1,9 @@
-import Button from '@mui/material/Button';
 import { Card as MuiCard } from '@mui/material';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import GroupIcon from '@mui/icons-material/Group';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import AttachmentIcon from '@mui/icons-material/Attachment';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {
   Typography,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
   Box,
-  TextField,
   Collapse,
 } from '@mui/material';
 import { useSortable } from '@dnd-kit/sortable';
@@ -32,7 +18,8 @@ import { updateCardAPI, deleteCardApi } from '~/apis/index.js';
 import { toast } from 'react-toastify';
 import { cloneDeep } from 'lodash';
 import { useConfirm } from 'material-ui-confirm';
-
+import {fetchCardDetail} from '~/redux/CardActivity/cardActiveSlice'
+import {fetchAllcomment} from '~/redux/CommentCard/commentCardSlice'
 function Card({ card }) {
   const dispatch = useDispatch();
   const board = useSelector(selectCurrentActiveBoard);
@@ -40,8 +27,6 @@ function Card({ card }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [titleValue, setTitleValue] = useState(card?.title || '');
-
-  const openMenu = Boolean(anchorEl);
 
   const showCardActions = () =>
     !!card?.memberIds?.length ||
@@ -131,6 +116,15 @@ function Card({ card }) {
     }
     dispatch(updateCurrentActiveBoard(newboard));
   };
+  const fetchCardActive= async () =>{
+    try{
+
+      const cardActive = await dispatch(fetchCardDetail(card._id))
+      const commentCard = await dispatch(fetchAllcomment(card._id))
+    }catch(error){
+      throw error
+    }
+  }
 
   return (
     <MuiCard
@@ -142,7 +136,13 @@ function Card({ card }) {
         boxShadow: '0 1px 1px rgba(0,0,0,0.2)',
         overflow: 'unset',
         position: 'relative',
+        '&:hover': {
+      cursor: 'pointer'
+    }
+        
       }}
+      
+      onClick={fetchCardActive}
     >
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
 
@@ -156,114 +156,12 @@ function Card({ card }) {
             }}
           >
             <Typography sx={{ flexGrow: 1 }}>{card?.title}</Typography>
-            <IconButton
-              size="small"
-              onClick={handleOpenMenu}
-              sx={{ ml: 0.5, opacity: 0.6, '&:hover': { opacity: 1 } }}
-            >
-              <MoreHorizIcon fontSize="small" />
-            </IconButton>
+         
           </Box>
         </Collapse>
 
-        <Collapse in={editMode} timeout={150} unmountOnExit>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-            <TextField
-              autoFocus
-              size="small"
-              variant="outlined"
-              value={titleValue}
-              onChange={(e) => setTitleValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSaveEdit();
-                if (e.key === 'Escape') {
-                  setEditMode(false);
-                  setTitleValue(card.title);
-                }
-              }}
-              sx={{ width: '100%' }}
-            />
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <Button
-                size="small"
-                onClick={() => {
-                  setEditMode(false);
-                  setTitleValue(card.title);
-                }}
-                sx={{
-                  flex: 1,
-                  py: 0.5,
-                  color: 'white',
-                  backgroundColor: '#e95151',
-                  transition: 'background-color 0.2s ease',
-                  '&:hover': { backgroundColor: '#f06868' },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                size="small"
-                onClick={handleSaveEdit}
-                disabled={!titleValue.trim()}
-                sx={{
-                  flex: 1,
-                  py: 0.5,
-                  color: 'white',
-                  backgroundColor: '#5aac44',
-                  transition: 'background-color 0.2s ease',
-                  '&:hover': { backgroundColor: '#77d25e' },
-                  '&.Mui-disabled': {
-                    backgroundColor: '#a0c99a',
-                    color: 'white',
-                  },
-                }}
-              >
-                Save
-              </Button>
-            </Box>
-          </Box>
-        </Collapse>
       </CardContent>
 
-      {showCardActions() && (
-        <CardActions sx={{ p: '0 4px 8px 4px' }}>
-          {!!card?.memberIds?.length && (
-            <Button size="small" startIcon={<GroupIcon />}>
-              {card?.memberIds?.length}
-            </Button>
-          )}
-          {!!card?.conmemnts?.length && (
-            <Button size="small" startIcon={<ChatBubbleIcon />}>
-              {card?.conmemnts?.length}
-            </Button>
-          )}
-          {!!card?.attachments?.length && (
-            <Button size="small" startIcon={<AttachmentIcon />}>
-              {card?.attachments?.length}
-            </Button>
-          )}
-        </CardActions>
-      )}
-
-      <Menu
-        anchorEl={anchorEl}
-        open={openMenu}
-        onClose={handleCloseMenu}
-        slotProps={{ list: { dense: true } }}
-      >
-        <MenuItem onClick={handleEdit}>
-          <ListItemIcon>
-            <EditIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Edit title</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-          <ListItemIcon>
-            <DeleteOutlineIcon fontSize="small" color="error" />
-          </ListItemIcon>
-          <ListItemText>Delete card</ListItemText>
-        </MenuItem>
-      </Menu>
     </MuiCard>
   );
 }

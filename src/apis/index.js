@@ -123,3 +123,16 @@ export const createBoardAPI = async (boardData) => {
     throw error;
   }
 };
+ 
+export const invitationBoard = async (data)=>{
+  try{
+    const response = await authorizeAxios.post(
+      `${API_ROOT}/v1/invitation/board`,
+      data
+    );
+     return response.data;
+  } catch(error){
+     console.error('Error creating invitation:', error);
+    throw error;
+  }
+}
