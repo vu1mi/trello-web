@@ -26,6 +26,8 @@ export default function BoardsPage() {
     const queryParams = new URLSearchParams(location.search);
     const pageParam = parseInt(queryParams.get('page')) || PAGE_DEFAULT_PAGE;
 
+    
+
       const handleCreateBoard = async (data) => {
        try {
         const newData = await createBoardAPI(data);

@@ -16,7 +16,7 @@ import {
   ROLE_REGEX_FULLNAME,
   ROLE_ERRORS_FULLNAME, } from "~/utils/validation";
   import { useDispatch } from "react-redux";
-import { fetchUserDataByTokenAPI } from '~/redux/user/userSlice';
+import { updateUserDataByTokenAPI } from '~/redux/user/userSlice';
 import { toast } from "react-toastify";
 import { validateImage } from "~/utils/validation";
 
@@ -45,7 +45,7 @@ export default function ProfileForm() {
      formData.append('avatar', file);
       console.log('file', formData.get('avatar'));
 
-       toast.promise(dispatch(fetchUserDataByTokenAPI(formData)).unwrap(), {
+       toast.promise(dispatch(updateUserDataByTokenAPI(formData)).unwrap(), {
       pending: 'Updating profile...',
       success: 'Profile updated successfully!',
     }).then(() => {
@@ -57,7 +57,7 @@ export default function ProfileForm() {
   }
 
   const onSubmit = (data) => {
-    toast.promise(dispatch(fetchUserDataByTokenAPI(data)).unwrap(), {
+    toast.promise(dispatch(updateUserDataByTokenAPI(data)).unwrap(), {
       pending: 'Updating profile...',
       success: 'Profile updated successfully!',
       error: 'Failed to update profile. Please try again.',
@@ -85,9 +85,9 @@ export default function ProfileForm() {
       </Typography>
 
       <Stack spacing={2} alignItems="center">
-        <Avatar src={userData.avatar} sx={{ width: 80, height: 80 }} />
+        <Avatar src={userData.user.avatar} sx={{ width: 80, height: 80 }} />
 
-        <Button variant="outlined" component="label" onChange={setavt}>
+        <Button variant="outlined" component="label" >
           Upload avatar
           <input hidden type="file" onChange={setavt} />
         </Button>

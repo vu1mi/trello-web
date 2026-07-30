@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography, Stack } from "@mui/material";
 import { ROLE_REGEX_PASSWORD, ROLE_ERRORS_PASSWORD } from "~/utils/validation";
 import { useSelector , useDispatch } from 'react-redux';
 import { selectUserData } from '~/redux/user/userSlice';
-import { fetchUserDataByTokenAPI } from '~/redux/user/userSlice';
+import { updateUserDataByTokenAPI } from '~/redux/user/userSlice';
 import {toast} from 'react-toastify';
 
 export default function PasswordForm() {
@@ -25,7 +25,7 @@ export default function PasswordForm() {
       password: data.password,
       newPassword: data.newPassword,
     };
-   toast.promise(dispatch(fetchUserDataByTokenAPI(payload)).unwrap(), {
+   toast.promise(dispatch(updateUserDataByTokenAPI(payload)).unwrap(), {
       pending: 'Updating password...',
       success: 'Password updated successfully!',
       error: 'Failed to update password. Please try again.',

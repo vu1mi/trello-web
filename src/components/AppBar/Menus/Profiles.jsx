@@ -52,7 +52,7 @@ function Starred() {
         >
           <Avatar
             sx={{ width: 32, height: 32 }}
-            src={userData?.avatar || undefined}
+            src={userData?.user.avatar || undefined}
           >
             {userData?.name?.charAt(0).toUpperCase()}
           </Avatar>
@@ -74,11 +74,9 @@ function Starred() {
           onClick={()=>navigate('/settings/profile')}
           sx={{ '&:hover': { color: 'success.light' } }}
         >
-          <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> Profile
+          <Avatar src={userData?.user.avatar} sx={{ width: 28, height: 28, mr: 2 }} /> Profile
         </MenuItem>
-        {/* <MenuItem onClick={handleClose}>
-          <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> My account
-        </MenuItem> */}
+ 
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>

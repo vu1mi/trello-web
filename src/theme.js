@@ -18,12 +18,28 @@ const theme = createTheme({
       palette: {
         primary: { main: teal[500], blank: '#d7f9f6', lightbold: '#98f1e8' },
         secondary: { main: '#fff' },
+        input:{
+          outline:'blue'
+        },
+          text: {
+            primary: '#000',
+            secondary: '#666',
+            title: '#1976d2',
+          },
       },
     },
     dark: {
       palette: {
         primary: { main: '#fff' },
         secondary: { main: '#414141' },
+         input:{
+          outline:'#fff'
+        },
+          text: {
+            primary: '#000',
+            secondary: '#666',
+            title: '#1976d2',
+          },
       },
     },
   },
@@ -48,10 +64,15 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.main,
+          color: theme.palette.input.outline,
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            // borderColor: theme.palette.primary.main,
+            borderColor: theme.palette.input.outline
           },
+          '.Mui-focused  .MuiOutlinedInput-notchedOutline':{
+            borderColor: theme.palette.input.outline
+          }
+
+
         }),
       },
     },
