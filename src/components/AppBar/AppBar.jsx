@@ -9,18 +9,14 @@ import Recent from './Menus/Recent';
 import Starred from './Menus/Starred';
 import Template from './Menus/Templates';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Profiles from './Menus/Profiles';
 import Badge from '@mui/material/Badge';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
-import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import NotificationForm from '~/components/Boards/NotificationForm'
+import AutoCompleteSearchBoard from './AutoConpleteInput';
 function AppBar() {
   const [searchVAlue, setSearchValue] = useState('');
   const navigate = useNavigate();
@@ -70,7 +66,7 @@ function AppBar() {
           </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TextField
+          {/* <TextField
             id="outlined-search"
             label="Search field"
             type="text"
@@ -107,7 +103,8 @@ function AppBar() {
                 '&.Mui-focused fieldset': { borderColor: 'white' },
               },
             }}
-          />
+          /> */}
+          <AutoCompleteSearchBoard />
           <ModeSelect />
          <NotificationForm/>
           <Tooltip title="Help">

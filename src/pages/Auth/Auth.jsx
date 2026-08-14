@@ -13,12 +13,13 @@ const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
   console.log('userData', userData);
-  if (userData) return <Navigate to="/" replace={true} />;
   useEffect(() => {
     // Sync tab with current pathname
     if (location.pathname && location.pathname.includes('/register')) setTab(1);
     else setTab(0);
   }, [location.pathname]);
+  
+  if (userData) return <Navigate to="/" replace={true} />;
   return (
     <Box
       sx={{

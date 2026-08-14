@@ -18,6 +18,8 @@ const theme = createTheme({
       palette: {
         primary: { main: teal[500], blank: '#d7f9f6', lightbold: '#98f1e8' },
         secondary: { main: '#fff' },
+        bgcolor: { main: '#1976d2' },
+  
         input:{
           outline:'blue'
         },
@@ -31,13 +33,14 @@ const theme = createTheme({
     dark: {
       palette: {
         primary: { main: '#fff' },
-        secondary: { main: '#414141' },
+        secondary: { main: '#b0b0b0' },
+         bgcolor: { main: '#34495e' },
          input:{
           outline:'#fff'
         },
           text: {
-            primary: '#000',
-            secondary: '#666',
+            primary: '#ffffff',
+            secondary: '#dcdcdc',
             title: '#1976d2',
           },
       },

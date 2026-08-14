@@ -99,10 +99,10 @@ export const refreshTokenAPI = async () => {
   return response.data;
 };
 
-export const getAllBoardsAPI = async (page, pageSize) => {
+export const getAllBoardsAPI = async (searchPath) => {
   try {
     const response = await authorizeAxios.get(
-      `${API_ROOT}/v1/board?page=${page}&pageSize=${pageSize}`
+      `${API_ROOT}/v1/board${searchPath}`
     );
     return response.data;
   } catch (error) {

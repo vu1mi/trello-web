@@ -25,7 +25,7 @@ export const updateUserDataByTokenAPI = createAsyncThunk(
     return response.data;
   }
 );
-export const logout = createAsyncThunk('user/logout', async (toast) => {
+export const logout = createAsyncThunk('user/logout', async () => {
   const response = await authorizeAxios.delete(`${API_ROOT}/v1/user/logout`);
   if(toast){
     toast.success('Logout successful');
