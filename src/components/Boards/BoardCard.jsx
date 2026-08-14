@@ -14,7 +14,10 @@ export default function BoardCard({ title, description, color ,id}) {
   console.log("Rendering BoardCard with props:", { title, description, color, id });
 
   return (
-    <Card sx={{ borderRadius: 2, boxShadow: 2, cursor: "pointer", width:'100%' }}>
+    <Card sx={{ borderRadius: 2, boxShadow: 2, cursor: "pointer", width:'100%', 
+    background: (theme) => {
+      return theme.palette.mode === 'dark' ? '#11263a' : '#fff';
+    } }}>
       {/* Thanh màu */}
       <Box
         sx={{
@@ -24,7 +27,7 @@ export default function BoardCard({ title, description, color ,id}) {
       />
 
       <CardContent>
-        <Typography variant="subtitle1" fontWeight="bold">
+        <Typography variant="subtitle1" fontWeight="bold" color="text.primary">
           {title}
         </Typography>
 

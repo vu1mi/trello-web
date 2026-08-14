@@ -51,7 +51,7 @@ function Board() {
       <AppBar />
       <BoardBar board={board} />
       <BoardContent board={board} />
-      <CardActions/>
+      {/* <CardActions/> */}
     </Container>
   );
 }

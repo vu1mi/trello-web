@@ -34,7 +34,8 @@ export default function BoardsPage() {
         console.log('Board created successfully:', newData);
         setOpen(false);
         // Refresh the board list after creating a new board
-         getAllBoardsAPI(pageParam, PAGE_DEFAULT_LIMIT).then(response => {
+        const searchPath = `?page=${pageParam}&pageSize=${PAGE_DEFAULT_LIMIT}`;
+         getAllBoardsAPI( searchPath).then(response => {
           console.log('Fetched boards:', response);
           setBoards(response.data);
             setTotalBoards(response.totalCount[0]?.count || 0);
@@ -49,7 +50,8 @@ export default function BoardsPage() {
      
         console.log('pageParam and query', pageParam, location.search);
         setPage(pageParam);
-        getAllBoardsAPI(pageParam, PAGE_DEFAULT_LIMIT)
+        const searchPath = `?page=${pageParam}&pageSize=${PAGE_DEFAULT_LIMIT}`;
+        getAllBoardsAPI(searchPath)
         .then(response => {
           console.log('Fetched boards:', response);
           setBoards(response.data);
@@ -69,7 +71,6 @@ export default function BoardsPage() {
         onClose={() => setOpen(false)}
         onSubmit={handleCreateBoard}
       />
-
       <Box sx={{ display: "flex" }}>
       
         <Box
@@ -78,6 +79,9 @@ export default function BoardsPage() {
             height: `calc(100vh - ${theme.trelloCustom.appBarHeight})`,
             borderRight: "1px solid #ddd",
             p: 2,
+            background: (theme) => {
+              return theme.palette.mode === 'dark' ? '#313a43' : '#f5f5f5';
+            }
           }}
         >
           <Typography variant="h6" mb={2}>
@@ -99,7 +103,9 @@ export default function BoardsPage() {
           </List>
         </Box>
 
-        <Box sx={{ flex: 1, p: 3 }}>
+        <Box sx={{ flex: 1, p: 3,  background: (theme) => {
+              return theme.palette.mode === 'dark' ? '#34495e' : '#f5f5f5';
+            } }}>
           <Typography variant="h5" mb={2} >
             Your boards:
           </Typography>

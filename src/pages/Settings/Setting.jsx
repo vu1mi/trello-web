@@ -42,7 +42,9 @@ export default function SettingsPage() {
       sx={{
         minHeight: '100vh',
         width: '100%',
-        background: 'linear-gradient(135deg, #667eea 0%, #3b3dde 100%)',
+        background: (theme) => {
+            return theme.palette.mode === 'dark' ? '#34495e' : '#1565c0';
+          },
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -57,7 +59,9 @@ export default function SettingsPage() {
           p: { xs: 2, md: 4 },
           borderRadius: 3,
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-          background: 'linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)',
+          background:  (theme) => {
+            return theme.palette.mode === 'dark' ? '#1d3145' : '#fff';
+          },
         }}
       >
         <Box sx={{ textAlign: 'center', mb: 3 }}>
@@ -66,7 +70,7 @@ export default function SettingsPage() {
             sx={{
               fontSize: { xs: '24px', md: '32px' },
               fontWeight: 700,
-              color: '#333',
+              color: 'text.primary',
               mb: 1,
             }}
           >
@@ -93,20 +97,25 @@ export default function SettingsPage() {
                 fontSize: { xs: '14px', md: '16px' },
                 fontWeight: 600,
                 textTransform: 'none',
-                color: '#999',
+                color: 'text.secondary',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  color: '#667eea',
+                  color:  (theme) => {
+                  return theme.palette.mode === 'dark' ? '#6d73f5' : '#667eea ';
+                },
                 },
               },
               '& .Mui-selected': {
-                color: '#667eea !important',
+                 color:  (theme) => {
+                  return theme.palette.mode === 'dark' ? '#6d73f5' : '#667eea ';
+                },
               },
               '& .MuiTabs-indicator': {
                 background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
                 height: 3,
                 borderRadius: 2,
               },
+            
             }}
           >
             <Tab

@@ -121,6 +121,7 @@ export const FormInvite = ()=>{
                 '&:hover': {
                     backgroundColor: '#1565c0',
                 },
+                color:'text.primary'
                 }}
             >
                 Invite
