@@ -54,9 +54,7 @@ const Login = ({ onSwitch = () => {} }) => {
       });
     console.log('Login form data:', data);
   };
-  // console.log("Login form errors:", verifiedEmail, registeredEmail, errors);
 
-  // console.log(errors);
 
   return (
     <Box
@@ -128,7 +126,13 @@ const Login = ({ onSwitch = () => {} }) => {
         />
         <FieldErrorAlert errors={errors} fieldName="password" />
 
-        <FormControlLabel control={<Checkbox />} label="Remember me" />
+        {/* <FormControlLabel control={<Checkbox />} label="Remember me" /> */}
+
+        <Typography>
+          <Link component="button" onClick={() => navigate('/reset-password')}>
+            Forgot password?
+          </Link>
+        </Typography>
 
         <Button
           type="submit"

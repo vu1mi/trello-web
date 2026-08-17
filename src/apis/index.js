@@ -86,7 +86,7 @@ export const registerAPI = async (userData) => {
 
 export const verifyAccountAPI = async (verificationData) => {
   const response = await authorizeAxios.put(
-    `${API_ROOT}/v1/user/verification`,
+    `${API_ROOT}/v1/user/verify`,
     verificationData
   );
   return response.data;
@@ -136,3 +136,42 @@ export const invitationBoard = async (data)=>{
     throw error;
   }
 }
+
+export const fetchOtpForgotPassword = async (email) => {
+  try {
+    const response = await authorizeAxios.post(
+      `${API_ROOT}/v1/user/forgot-password`,
+      { email }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching OTP for password reset:', error);
+    throw error;
+  }
+};
+
+export const checkOtpForgotPassword = async (email, otp) => {
+  try {
+    const response = await authorizeAxios.post(
+      `${API_ROOT}/v1/user/check_otp`,
+      { email, otp }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error checking OTP for password reset:', error);
+    throw error;
+  }
+};
+
+export const resetPasswordAPI = async (email, newPassword) => {
+  try {
+    const response = await authorizeAxios.put(
+      `${API_ROOT}/v1/user/reset-password`,
+      { email, newPassword }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    throw error;
+  }
+};
