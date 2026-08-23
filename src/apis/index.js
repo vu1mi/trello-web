@@ -14,13 +14,11 @@ export const createColumnAPI = async (columnData) => {
   }
 };
 
-export const updateColumnAPI = async (columnId, columnName) => {
+export const updateColumnAPI = async (columnId, data) => {
   try {
     const response = await authorizeAxios.patch(
       `${API_ROOT}/v1/column/${columnId}`,
-      {
-        title: columnName,
-      }
+      data
     );
     return response;
   } catch (error) {
@@ -28,6 +26,7 @@ export const updateColumnAPI = async (columnId, columnName) => {
     throw error;
   }
 };
+
 
 export const deleteColumnAPI = async (columnId) => {
   try {
@@ -62,6 +61,22 @@ export const updateCardAPI = async (cardId, cardName) => {
     console.error('Error updating card:', error);
     throw error;
   }
+};
+
+export const updateCardPositionAPI = async (cardId, columnId) => {
+  const response = await authorizeAxios.patch(
+    `${API_ROOT}/v1/card/${cardId}`,
+    { columnId }
+  );
+  return response;
+};
+
+export const updateBoardColumnOrderAPI = async (boardId, columnOrderIds) => {
+  const response = await authorizeAxios.patch(
+    `${API_ROOT}/v1/board/${boardId}`,
+    { columnOrderIds }
+  );
+  return response;
 };
 export const deleteCardApi = async (cardId) => {
   try {
@@ -175,3 +190,4 @@ export const resetPasswordAPI = async (email, newPassword) => {
     throw error;
   }
 };
+

@@ -15,6 +15,7 @@ import {
   updateCurrentActiveBoard,
 } from '~/redux/activeBoard/activeBoardSlice';
 import { createColumnAPI, deleteColumnAPI } from '~/apis/index.js';
+import { socketInstance } from '~/main';
 
 function ListColumn({ columns }) {
   const dispatch = useDispatch();
@@ -33,6 +34,11 @@ function ListColumn({ columns }) {
     newboard.columns.push(createdColumn);
     newboard.columnOrderIds.push(createdColumn._id);
     dispatch(updateCurrentActiveBoard(newboard));
+    socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+      boardId: board._id,
+      columnOrderIds: newboard.columnOrderIds,
+      columns: [createdColumn],
+    });
 
     // await createColumn({ title: valueInput.trim() });
     setOpenInput(false);

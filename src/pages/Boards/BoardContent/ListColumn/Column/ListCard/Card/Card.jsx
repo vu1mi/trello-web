@@ -1,6 +1,8 @@
 import { Card as MuiCard } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import {
   Typography,
   Box,
@@ -17,7 +19,9 @@ import {
 import { updateCardAPI, deleteCardApi } from '~/apis/index.js';
 import { toast } from 'react-toastify';
 import { cloneDeep } from 'lodash';
+import { socketInstance } from '~/main';
 import { useConfirm } from 'material-ui-confirm';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {fetchCardDetail} from '~/redux/CardActivity/cardActiveSlice'
 import {fetchAllcomment} from '~/redux/CommentCard/commentCardSlice'
 function Card({ card }) {
@@ -81,6 +85,16 @@ function Card({ card }) {
           }
         }
         dispatch(updateCurrentActiveBoard(newboard));
+        const updatedColumn = newboard.columns.find((column) =>
+          column.cards.some((boardCard) => boardCard._id === card._id)
+        );
+        if (updatedColumn) {
+          socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+            boardId: board._id,
+            columnOrderIds: newboard.columnOrderIds,
+            columns: [updatedColumn],
+          });
+        }
       }
     } catch (error) {
       toast.error('Failed to update card title. Please try again.');
@@ -92,35 +106,48 @@ function Card({ card }) {
 
   const handleDelete = async () => {
     handleCloseMenu();
-    const consfirmed = await confirm({
-      title: 'Are you sure you want to delete this card?',
-      description: 'This action cannot be undone.',
-      confirmationText: 'Delete',
-      cancellationText: 'Cancel',
-    });
+    try {
+      const { confirmed } = await confirm({
+        title: 'Are you sure you want to delete this card?',
+        description: 'This action cannot be undone.',
+        confirmationText: 'Delete',
+        cancellationText: 'Cancel',
+      });
 
-    if (!consfirmed) return;
-    const response = await deleteCardApi(card._id);
-    if (response.status === 204) {
+      if (!confirmed) return;
+
+      const response = await deleteCardApi(card._id);
+      if (response.status !== 204) return;
+
+      const newboard = cloneDeep(board);
+      const deletedFromColumn = newboard.columns.find((column) =>
+        column.cards.some((boardCard) => boardCard._id === card._id)
+      );
+      if (!deletedFromColumn) return;
+
+      deletedFromColumn.cards = deletedFromColumn.cards.filter(
+        (boardCard) => boardCard._id !== card._id
+      );
+      deletedFromColumn.cardOrderIds = deletedFromColumn.cardOrderIds.filter(
+        (id) => id !== card._id
+      );
+      dispatch(updateCurrentActiveBoard(newboard));
+      socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+        boardId: board._id,
+        columnOrderIds: newboard.columnOrderIds,
+        columns: [deletedFromColumn],
+      });
       toast.success('Delete card successfully');
+    } catch (error) {
+      if (error?.confirmed === false) return;
+      toast.error('Delete card failed');
     }
-    const newboard = cloneDeep(board);
-    for (const column of newboard.columns) {
-      if (column.cards.some((c) => c._id === card._id)) {
-        column.cards = column.cards.filter((c) => c._id !== card._id);
-        column.cardOrderIds = column.cardOrderIds.filter(
-          (id) => id !== card._id
-        );
-        break;
-      }
-    }
-    dispatch(updateCurrentActiveBoard(newboard));
   };
   const fetchCardActive= async () =>{
     try{
 
-      const cardActive = await dispatch(fetchCardDetail(card._id))
-      const commentCard = await dispatch(fetchAllcomment(card._id))
+      const cardActive = await dispatch(fetchCardDetail(card._id)).unwrap()
+      const commentCard = await dispatch(fetchAllcomment(card._id)).unwrap()
     }catch(error){
       throw error
     }
@@ -156,6 +183,18 @@ function Card({ card }) {
             }}
           >
             <Typography sx={{ flexGrow: 1 }}>{card?.title}</Typography>
+            <Tooltip title="Delete card">
+              <IconButton
+                size="small"
+                aria-label="Delete card"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleDelete();
+                }}
+              >
+                <DeleteOutlineIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
          
           </Box>
         </Collapse>

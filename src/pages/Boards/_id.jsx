@@ -22,12 +22,28 @@ import { useParams } from 'react-router-dom';
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner';
 
 import { CardActions } from '~/components/model/CardActive/CardActivity';
+import { socketInstance } from '~/main';
+import { applyBoardOrderUpdate } from '~/redux/activeBoard/activeBoardSlice';
 function Board() {
 
   const { boardId } = useParams();
   const board = useSelector(selectCurrentActiveBoard);
   const dispatch = useDispatch();
   const currentActiveBoard = useSelector(selectCurrentActiveBoard);
+
+  useEffect(() => {
+    const handleBoardOrderUpdate = (boardOrderUpdate) => {
+      dispatch(applyBoardOrderUpdate(boardOrderUpdate));
+    };
+
+    socketInstance.emit('FE_JOIN_BOARD', boardId);
+    socketInstance.on('BE_BOARD_ORDER_UPDATED', handleBoardOrderUpdate);
+
+    return () => {
+      socketInstance.off('BE_BOARD_ORDER_UPDATED', handleBoardOrderUpdate);
+    };
+  }, [dispatch, boardId]);
+
   useEffect(() => {
     const fetchBoardDetail = async () => {
       const respone = await dispatch(fetchBoardDetailAPI(boardId));
@@ -51,7 +67,7 @@ function Board() {
       <AppBar />
       <BoardBar board={board} />
       <BoardContent board={board} />
-      {/* <CardActions/> */}
+      <CardActions />
     </Container>
   );
 }

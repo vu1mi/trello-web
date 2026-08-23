@@ -17,7 +17,7 @@ import { useDispatch , useSelector } from 'react-redux';
 import {updateCardAction} from '../../../redux/activeBoard/activeBoardSlice'
 
 const CardActivitySection = ({ cardActive}) => {
- const dataCard = useSelector(selectCardActive)
+  const dataCard = useSelector(selectCardActive)
   const [coverdata , setCoverdata] = useState()
   const dispatch = useDispatch()
   const setcover =(e)=>{
@@ -53,28 +53,28 @@ const CardActivitySection = ({ cardActive}) => {
         <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 'bold', fontSize: '1rem', color: 'text.title' }}>
           Add To Card
         </Typography>
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <PermIdentityIcon />
             Join
         </Button >
-         <Button variant="text" component="label" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+         <Button variant="text" component="label" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <PhotoCameraBackIcon />
             Cover
             <input hidden type="file" onChange={setcover} />
         </Button >
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <LocalOfferOutlinedIcon />
             Label
         </Button >
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <CheckCircleOutlineOutlinedIcon />
             Checklist
         </Button >
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <EventIcon />
             Dates
         </Button >
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AutoFixHighOutlinedIcon />
             Custom Fields
         </Button >
@@ -86,15 +86,15 @@ const CardActivitySection = ({ cardActive}) => {
         <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 'bold', fontSize: '1rem', color: 'text.title' }}>
           Power-Ups
         </Typography>
-       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AspectRatioIcon />
             Card Size
         </Button>
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AddToDriveIcon />
             Add to Drive
         </Button>
-       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AddIcon />
             Add Power-Ups
         </Button>
@@ -105,15 +105,15 @@ const CardActivitySection = ({ cardActive}) => {
         <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 'bold', fontSize: '1rem', color: 'text.title' }}>
           Power-Ups
         </Typography>
-       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AspectRatioIcon />
             Card Size
         </Button>
-        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+        <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AddToDriveIcon />
             Add to Drive
         </Button>
-       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'#000', justifyContent:'flex-start' ,alignItems:'center'}}>
+       <Button variant="text" sx={{  display: 'flex', gap: 1, fontWeight:'bold',color:'text.primary', justifyContent:'flex-start' ,alignItems:'center'}}>
           <AddIcon />
             Add Power-Ups
         </Button>
