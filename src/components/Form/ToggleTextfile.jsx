@@ -1,10 +1,14 @@
 import { TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import theme from "~/theme";
 
 export default function EditableTitle({ initialValue , onChange }) {
   const [value, setValue] = useState(initialValue || "Click để sửa");
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    setValue(initialValue || "Click để sửa");
+  }, [initialValue]);
 
   const triggerBlur = (e) => {
     if(!value){

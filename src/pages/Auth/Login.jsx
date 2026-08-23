@@ -3,8 +3,6 @@ import {
   Avatar,
   Box,
   Button,
-  Checkbox,
-  FormControlLabel,
   Link,
   TextField,
   Typography,

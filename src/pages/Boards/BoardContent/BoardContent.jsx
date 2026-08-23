@@ -16,7 +16,16 @@ import { useState, useEffect, useRef } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import Column from './ListColumn/Column/Column';
 import Card from './ListColumn/Column/ListCard/Card/Card';
+import { updateCardPositionAPI, updateColumnAPI } from '~/apis/index.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { socketInstance } from '~/main';
+import {
+  updataCardOrderIds,
+  updateBoardAPI,
+  updateCurrentActiveBoard,
+} from '~/redux/activeBoard/activeBoardSlice';
 function BoardContent({ board }) {
+    const dispatch = useDispatch();
   const TYPE_ELEMENT_DRANGGING = {
     COLUMN: 'COLUMN',
     CARD: 'CARD',
@@ -26,6 +35,7 @@ function BoardContent({ board }) {
   const [idColumnDrangging, setIdColumnDrangging] = useState(null);
   const [orderedColumns, setorderedColumns] = useState([]);
   const [oldcolumnactive, setOldColumnActive] = useState([]);
+  const[columnChanged, setColumnChanged] = useState(false)
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },
   });
@@ -58,68 +68,6 @@ function BoardContent({ board }) {
     }
     console.log(event);
   };
-  // const handleDrangOver = (event) => {
-  //   const { active, over } = event;
-  //   const overId = over?.id || lastOverId.current;
-  //   if (!overId) return;
-  //   lastOverId.current = overId;
-  //   if (!over) return;
-  //   if(typeElementDrangging === TYPE_ELEMENT_DRANGGING.COLUMN){
-  //     return
-  //   }
-
-  //   const idCardOver = over?.id;
-  //   const idCardDrangging = active?.id;
-  //   const columnactive = findIndexColumn(idCardDrangging);
-  //   let columnover =  findIndexColumn(idCardOver) ;
-  //   if(columnover === undefined){
-  //     columnover = orderedColumns.find(c => c._id === idCardOver)
-  //   }
-  //   console.log("columnactive:", columnactive)
-  //   console.log("columnover:", columnover)
-
-  //   if (!columnactive || !columnover) return
-  //   if (columnactive._id === columnover._id) return;
-
-  //   // trường hợp kéo thả card sang 2 column khác nhau
-  //   if (columnactive._id !== columnover._id) {
-
-  //   setorderedColumns(prevColumns => {
-
-  //     const isBelowOverItem = active.rect.current.translated &&
-  //       active.rect.current.translated.top > over.rect.top + over.rect.height
-
-  //    const nextColumns = cloneDeep(prevColumns)
-  //     const nextActiveColumn = nextColumns.find(c => c._id === columnactive._id)
-  //     const nextOverColumn = nextColumns.find(c => c._id === columnover._id)
-  //        const modify = isBelowOverItem ? 1 : 0
-  //   const indexCardOver = nextOverColumn.cards.findIndex(c => c._id === idCardOver)
-  //   const newCardIndex = indexCardOver >= 0 ? indexCardOver + modify : nextOverColumn?.cards?.length + 1
-
-  //       if (nextActiveColumn) {
-  //       // Lọc card đang kéo ra khỏi mảng cards của cột cũ
-  //       nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== idCardDrangging)
-  //       // Cập nhật lại mảng ID cardOrderIds chuẩn dữ liệu [15]
-  //       nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
-  //     }
-  //     console.log("nextOverColumn:", nextOverColumn)
-  //     // Column mới (nextOverColumn): Thêm card đang kéo vào column mới theo index đã tính toán [16]
-  //     if (nextOverColumn) {
-  //       // Kiểm tra xem card đang kéo đã tồn tại ở overColumn chưa, nếu có thì xóa nó trước (tránh trùng lặp) [16]
-  //       nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== idCardDrangging)
-  //       // Chèn card đang kéo vào vị trí index mới [17]
-  //       // Sử dụng toSpliced (hoặc splice nếu đã cloneDeep) để thêm dữ liệu card vào [17]
-  //       nextOverColumn.cards.splice(newCardIndex, 0, dataElementDrangging)
-
-  //       // Cập nhật lại mảng ID cardOrderIds cho cột mới [18]
-  //       nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
-  //     }
-
-  //     return nextColumns
-  //   })
-  // }
-
-  // }
   const handleDrangOver = (event) => {
     const { active, over } = event;
     if (!over) return;
@@ -146,7 +94,7 @@ function BoardContent({ board }) {
       const nextOverColumn = nextColumns.find((c) => c._id === columnover._id);
 
       if (!nextActiveColumn || !nextOverColumn) return prevColumns; // ✅ guard
-
+ 
       // ✅ Lấy card đang kéo từ nextActiveColumn (đã cloneDeep) thay vì dùng dataElementDrangging
       const draggingCard = nextActiveColumn.cards.find(
         (c) => c._id === idCardDrangging
@@ -186,37 +134,62 @@ function BoardContent({ board }) {
     });
   };
 
-  const handleDrangEnd = (event) => {
+  const handleDrangEnd = async (event) => {
     const { active, over } = event;
     if (!over) return;
     if (typeElementDrangging === TYPE_ELEMENT_DRANGGING.CARD) {
-      const idCardOver = over?.id;
-      const idCardDrangging = active?.id;
-      const columnactive = findIndexColumn(idCardDrangging);
-      let columnover = findIndexColumn(idCardOver);
+      const idCardOver = over.id;
+      const idCardDrangging = active.id;
 
-      // trường hợp kéo thả card sang 2 column khác nhau
-      if (oldcolumnactive._id !== columnover._id) {
-        console.log('drag end card between 2 column');
-      } else {
-        const oldIndex = oldcolumnactive.cards.findIndex(
-          (c) => c._id === idCardDrangging
+      const nextColumns = cloneDeep(orderedColumns);
+      const oldColumnId = oldcolumnactive?._id;
+      const activeColumn = nextColumns.find((column) =>
+        column.cards.some((card) => card._id === idCardDrangging)
+      );
+      const overColumn =
+        nextColumns.find((column) =>
+          column.cards.some((card) => card._id === idCardOver)
+        ) || nextColumns.find((column) => column._id === idCardOver);
+
+      if (!activeColumn || !overColumn || !oldColumnId) return;
+
+      if (activeColumn._id === overColumn._id) {
+        const oldIndex = activeColumn.cards.findIndex(
+          (card) => card._id === idCardDrangging
         );
-        const newIndex = oldcolumnactive.cards.findIndex(
-          (c) => c._id === idCardOver
+        const overIndex = overColumn.cards.findIndex(
+          (card) => card._id === idCardOver
         );
-        const newCards = arrayMove(oldcolumnactive.cards, oldIndex, newIndex);
-        setorderedColumns((prevColumns) => {
-          const nextColumns = cloneDeep(prevColumns);
-          const targetColumn = nextColumns.find(
-            (c) => c._id === oldcolumnactive._id
-          );
-          targetColumn.cards = newCards;
-          targetColumn.cardOrderIds = newCards.map((c) => c._id);
-          return nextColumns;
-        });
+        if (overIndex >= 0 && oldIndex !== overIndex) {
+          activeColumn.cards = arrayMove(activeColumn.cards, oldIndex, overIndex);
+          activeColumn.cardOrderIds = activeColumn.cards.map((card) => card._id);
+        }
       }
+
+      const oldColumn = nextColumns.find((column) => column._id === oldColumnId);
+      const changedColumnIds = new Set([oldColumnId, overColumn._id]);
+      await Promise.all([
+        ...nextColumns
+          .filter((column) => changedColumnIds.has(column._id))
+          .map((column) =>
+            updateColumnAPI(column._id, { cardOrderIds: column.cardOrderIds })
+          ),
+        ...(oldColumnId !== overColumn._id
+          ? [updateCardPositionAPI(idCardDrangging, overColumn._id)]
+          : []),
+      ]);
+
+      const updatedBoard = cloneDeep(board);
+      updatedBoard.columns = nextColumns;
+      dispatch(updateCurrentActiveBoard(updatedBoard));
+      setorderedColumns(nextColumns);
+      socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+        boardId: board._id,
+        columnOrderIds: board.columnOrderIds,
+        columns: nextColumns.filter((column) => changedColumnIds.has(column._id)),
+      });
     }
+
 
     // xu li keo tha column
     if (
@@ -227,6 +200,16 @@ function BoardContent({ board }) {
       const newIndex = orderedColumns.findIndex((c) => c._id === over.id);
       const dndorderedColumns = arrayMove(orderedColumns, oldIndex, newIndex);
       setorderedColumns(dndorderedColumns);
+      dispatch(updateBoardAPI({
+        boardId: board._id,
+        updateData: {
+          columnOrderIds: dndorderedColumns.map((c) => c._id),
+        },
+      }));
+      socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+        boardId: board._id,
+        columnOrderIds: dndorderedColumns.map((column) => column._id),
+      });
     }
     setTypeElementDrangging(null);
     setDataElementDrangging(null);

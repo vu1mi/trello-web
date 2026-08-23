@@ -74,7 +74,7 @@ const NotificationForm = () => {
         return () => {
             socketInstance.off('BE_USER_INVITED_TO_BOARD', onReceiveNewInvitation)
         }
-    }, [dispatch, userdata.user._id])
+    }, [dispatch, userdata?.user._id])
 
     const handlerAction = async (action, item) => {
         const data = {

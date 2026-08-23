@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 export default function BoardsPage() {
     const [page, setPage] = useState(PAGE_DEFAULT_PAGE);
     const [boards, setBoards] = useState([]);
-    const [totalBoards, setTotalBoards] = useState(100);
+    const [totalBoards, setTotalBoards] = useState(null);
     const location = useLocation();
     const [open, setOpen] = useState(false);
     const queryParams = new URLSearchParams(location.search);

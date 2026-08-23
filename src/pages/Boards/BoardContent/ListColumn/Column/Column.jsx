@@ -28,8 +28,10 @@ import {
   updateCurrentActiveBoard,
 } from '~/redux/activeBoard/activeBoardSlice';
 import { cloneDeep } from 'lodash';
+import { socketInstance } from '~/main';
 import { useConfirm } from 'material-ui-confirm';
 import EditableTitle from '~/components/Form/ToggleTextfile';
+import { title } from '@uiw/react-md-editor';
 
 function Column({ column }) {
   const dispatch = useDispatch();
@@ -83,6 +85,11 @@ function Column({ column }) {
       columnToupdate.cards.push(createdCard.data);
       columnToupdate.cardOrderIds.push(createdCard.data._id);
       dispatch(updateCurrentActiveBoard(newboard));
+      socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+        boardId: board._id,
+        columnOrderIds: newboard.columnOrderIds,
+        columns: [columnToupdate],
+      });
       toast.success('Create card successfully');
     } catch (error) {
       toast.error('Create card failed');
@@ -127,7 +134,10 @@ function Column({ column }) {
 
   const updateTitleColumn = async (newTitle) => {
     try {
-      const response = await updateColumnAPI(column._id, newTitle);
+      const newtitle = {
+        title: newTitle,
+      }
+      const response = await updateColumnAPI(column._id, newtitle);
       console.log('response update column:', response);
       if (response.status === 200) {
         toast.success('Update column title successfully');
@@ -139,6 +149,11 @@ function Column({ column }) {
         }
         columnToupdate.title = newTitle;
         dispatch(updateCurrentActiveBoard(newboard));
+        socketInstance.emit('FE_BOARD_ORDER_UPDATED', {
+          boardId: board._id,
+          columnOrderIds: newboard.columnOrderIds,
+          columns: [columnToupdate],
+        });
       }
     } catch (error) {
       toast.error('Update column title failed');

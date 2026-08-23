@@ -4,7 +4,6 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Sort } from '@mui/icons-material';
 
 function ListCard({ cards }) {
   return (
