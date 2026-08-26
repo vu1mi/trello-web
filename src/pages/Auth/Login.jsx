@@ -151,7 +151,11 @@ const Login = ({ onSwitch = () => {} }) => {
         {/* <FormControlLabel control={<Checkbox />} label="Remember me" /> */}
 
         <Typography>
-          <Link component="button" onClick={() => navigate('/reset-password')}>
+          <Link
+            component="button"
+            type="button"
+            onClick={() => navigate('/reset-password')}
+          >
             Forgot password?
           </Link>
         </Typography>
