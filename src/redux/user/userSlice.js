@@ -10,12 +10,21 @@ const initialState = {
 
 export const fetchUserDataAPI = createAsyncThunk(
   'user/fetchUserData',
-  async (userInfo) => {
-    const response = await authorizeAxios.post(
-      `${API_ROOT}/v1/user/login`,
-      userInfo
-    );
-    return response.data;
+  async (userInfo, { rejectWithValue }) => {
+    try {
+      const response = await authorizeAxios.post(
+        `${API_ROOT}/v1/user/login`,
+        userInfo
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue({
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.response?.data?.message || error.message,
+        code: error.code,
+      });
+    }
   }
 );
 export const updateUserDataByTokenAPI = createAsyncThunk(

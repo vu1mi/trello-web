@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = ({ onSwitch = () => {} }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [blockedSeconds, setBlockedSeconds] = useState(0);
   // const userData = useSelector((state) => state.user.userData);
   const {
     register,
@@ -37,7 +38,21 @@ const Login = ({ onSwitch = () => {} }) => {
   const [searchParams] = useSearchParams();
   const verifiedEmail = searchParams.get('verifiedEmail');
   const registeredEmail = searchParams.get('registeredEmail');
+  useEffect(() => {
+    if (blockedSeconds <= 0) return undefined;
+
+    const timerId = window.setInterval(() => {
+      setBlockedSeconds((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timerId);
+  }, [blockedSeconds]);
+
+  const formattedBlockedTime = `${String(Math.floor(blockedSeconds / 60)).padStart(2, '0')}:${String(blockedSeconds % 60).padStart(2, '0')}`;
+
   const onSubmit = (data) => {
+    if (blockedSeconds > 0) return;
+
     toast
       .promise(dispatch(fetchUserDataAPI(data)).unwrap(), {
         pending: 'Logging in...',
@@ -48,6 +63,10 @@ const Login = ({ onSwitch = () => {} }) => {
         if (!res.error) navigate('/');
       })
       .catch((err) => {
+        console.log('Login error:', err);
+            if (err?.status === 429) {
+          setBlockedSeconds(120);
+        }
         console.error('Login error:', err);
       });
     console.log('Login form data:', data);
@@ -77,6 +96,11 @@ const Login = ({ onSwitch = () => {} }) => {
           Sign in
         </Typography>
         <Stack sx={{ width: '100%' }} spacing={2}>
+          {blockedSeconds > 0 && (
+            <Alert variant="outlined" severity="warning">
+              Tạm thời không thể đăng nhập. Vui lòng thử lại sau {formattedBlockedTime}.
+            </Alert>
+          )}
           {verifiedEmail && (
             <Alert variant="outlined" severity="success">
               Email {verifiedEmail} has been successfully verified. Please log
@@ -139,8 +163,9 @@ const Login = ({ onSwitch = () => {} }) => {
           color="primary"
           sx={{ mt: 2 }}
           className="interceptor-loading"
+          disabled={blockedSeconds > 0}
         >
-          Sign In
+          {blockedSeconds > 0 ? `Try again in ${formattedBlockedTime}` : 'Sign In'}
         </Button>
 
         <Box sx={{ mt: 2, textAlign: 'center' }}>

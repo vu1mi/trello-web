@@ -65,15 +65,12 @@ authorizeAxios.interceptors.response.use(
       });
     }
 
-    let errorMessage = error.response;
-    if (error.response?.data?.message) {
-      errorMessage = error.response?.data?.message;
-    }
-    console.error('API Error:', error.response.status, errorMessage);
-    toast.error(errorMessage)
-    if (error.response.status !== 401) {
-      toast.error(errorMessage || 'An error occurred. Please try again.');
-    }
+    const status = error.response?.status;
+    const errorMessage =
+      error.response?.data?.message || error.message || 'An error occurred. Please try again.';
+
+    console.error('API Error:', status, error);
+    toast.error(errorMessage);
     return Promise.reject(error);
   }
 );
