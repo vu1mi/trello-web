@@ -1,10 +1,10 @@
 
 let api_root = ''
 
-if (process.env.BUILD_MODE === 'production') {
+if (import.meta.env.VITE_BUILD_MODE === 'production') {
     api_root = 'https://be-trelloweb.onrender.com';
 }
-if (process.env.BUILD_MODE === 'dev') {
+if (import.meta.env.VITE_BUILD_MODE === 'dev') {
     api_root = 'http://localhost:8018';
 }
 export const API_ROOT = api_root;
