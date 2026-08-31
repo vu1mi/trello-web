@@ -1,6 +1,6 @@
 // components/BoardCard.jsx
-import { Card, CardContent, Typography, Box} from "@mui/material";
-import { Link  } from "react-router-dom";
+import { Card, CardContent, Typography, Box, Link as MuiLink } from "@mui/material";
+import { Link as RouterLink  } from "react-router-dom";
 import {
   fetchBoardDetailAPI,
   selectCurrentActiveBoard,
@@ -36,9 +36,20 @@ export default function BoardCard({ title, description, color ,id}) {
           {description}
         </Typography>
 
-        <Link  to={`/boards/${id}`} underline="hover" sx={{ fontSize: 14 }}>
+        <MuiLink
+          component={RouterLink}
+          to={`/boards/${id}`}
+          underline="hover"
+          sx={{
+            fontSize: 14,
+            color: (theme) => (theme.palette.mode === 'dark' ? '#bbdcf7' : 'primary.main'),
+            '&:hover': {
+              color: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : 'primary.dark'),
+            },
+          }}
+        >
           Go to board →
-        </Link>
+        </MuiLink>
       </CardContent>
     </Card>
   );

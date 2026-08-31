@@ -1,4 +1,3 @@
-
 let api_root = ''
 
 if (process.env.BUILD_MODE === 'production') {
