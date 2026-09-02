@@ -9,7 +9,7 @@ import { selectCurrentActiveBoard } from '../../redux/activeBoard/activeBoardSli
 
 export const GroupUserAvatar = () => {
   const boardData = useSelector(selectCurrentActiveBoard)
-  const boardusers = new Array(16).fill(null);
+  // const boardusers = new Array(16).fill(null);
   const limit = 4;
   const [showAll, setShowAll] = useState(false);
   const isOpenpopover = Boolean(showAll);
@@ -43,7 +43,7 @@ export const GroupUserAvatar = () => {
       {boardData?.Fe_allUser.length > limit && (
         <Tooltip title="Show more users" onClick={handleTogglePopover}>
           <Avatar>
-            +{boardusers.length - limit}
+            +{boardData?.Fe_allUser.length - limit}
           </Avatar>
         </Tooltip>
       )}
